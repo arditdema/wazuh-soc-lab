@@ -1,0 +1,27 @@
+<!--
+  Custom Wazuh rules for the SOC home lab (see reports/IR-003).
+  Technique: T1053.005 Scheduled Task. Place in /var/ossec/etc/rules/local_rules.xml.
+-->
+
+<group name="local,sysmon,persistence,">
+  <rule id="100100" level="10">
+    <if_sid>61603</if_sid>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\schtasks\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)/create</field>
+    <description>Scheduled task created via schtasks.exe (possible persistence)</description>
+    <mitre>
+      <id>T1053.005</id>
+    </mitre>
+  </rule>
+</group>
+
+<group name="local,sysmon,persistence,">
+  <rule id="100101" level="10">
+    <if_sid>61613</if_sid>
+    <field name="win.eventdata.targetFilename" type="pcre2">(?i)^C:\\+Windows\\+System32\\+Tasks\\+(?!Microsoft\\+)</field>
+    <description>Scheduled task file created in System32\Tasks (possible persistence)</description>
+    <mitre>
+      <id>T1053.005</id>
+    </mitre>
+  </rule>
+</group>
